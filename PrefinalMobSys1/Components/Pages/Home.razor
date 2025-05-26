@@ -1,84 +1,55 @@
 ﻿@page "/"
 @using System.Linq
 
-@* Sample data for demonstration *@
-@code {
-    private string searchTerm = "";
-    private List<Contact> contacts = new()
-    {
-        new Contact { Id = 1, Name = "Alice Smith", Phone = "555-1234", Email = "alice@example.com" },
-        new Contact { Id = 2, Name = "Bob Johnson", Phone = "555-5678", Email = "bob@example.com" },
-        new Contact { Id = 3, Name = "Charlie Brown", Phone = "555-8765", Email = "charlie@example.com" }
-    };
+<head>
+    <link rel="stylesheet" href="css/style.css">
+</head>
 
-    private IEnumerable<Contact> FilteredContacts =>
-        string.IsNullOrWhiteSpace(searchTerm)
-            ? contacts
-            : contacts.Where(c => c.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) || c.Phone.Contains(searchTerm));
-
-    private void AddContact() { /* Navigate to add contact page or show modal */ }
-    private void ViewContact(int id) { /* Navigate to view contact */ }
-    private void EditContact(int id) { /* Navigate to edit contact */ }
-    private void DeleteContact(int id) { contacts = contacts.Where(c => c.Id != id).ToList(); }
-}
-
-@* Dashboard Header *@
-<div class="dashboard-header">
-    <h2><i class="fa fa-address-book"></i> Contacts Dashboard</h2>
-    <div class="dashboard-actions">
-        <input class="form-control" type="text" placeholder="Search contacts..." @bind="searchTerm" />
-        <button class="btn btn-primary" @onclick="AddContact">
-            <i class="fa fa-user-plus"></i> Add Contact
-        </button>
+<div class="contacts-container">
+    <div class="top-bar">
+        <h3>Contacts</h3>
+        <button class="add-btn" @onclick="AddContact">+</button>
     </div>
-</div>
 
-@* Summary Card *@
-<div class="summary-cards">
-    <div class="card summary-card">
-        <div class="card-body">
-            <h5 class="card-title"><i class="fa fa-users"></i> Total Contacts</h5>
-            <p class="card-text">@contacts.Count</p>
+    <div class="search-wrapper">
+        <input class="search-input" type="text" placeholder="Search" @bind="searchTerm" />
         </div>
-    </div>
-</div>
 
-@* Contacts List *@
+    <!-- Contacts List with Letter Grouping -->
 <div class="contacts-list">
     @if (!FilteredContacts.Any())
     {
-        <div class="alert alert-info">No contacts found.</div>
+            <div class="no-contacts">No contacts found.</div>
     }
     else
     {
-        <ul class="list-group">
-            @foreach (var contact in FilteredContacts)
+            @foreach (var group in FilteredContacts.OrderBy(c => c.Name).GroupBy(c => c.Name.Substring(0, 1).ToUpper()))
             {
-                <li class="list-group-item d-flex align-items-center justify-content-between">
-                    <div class="contact-info d-flex align-items-center">
+                <div class="contact-section">
+                    <h4 class="section-header">@group.Key</h4>
+                    @foreach (var contact in group)
+                    {
+                        <div class="contact-card">
                         <div class="avatar">
-                            <i class="fa fa-user-circle fa-2x"></i>
+                                <img src="https://via.placeholder.com/40" />
                         </div>
-                        <div class="ms-3">
-                            <div class="fw-bold">@contact.Name</div>
-                            <div class="text-muted">@contact.Phone</div>
+                            <div class="contact-details">
+                                <div class="contact-name">@contact.Name</div>
+                                <div class="contact-location">@contact.Phone</div>
                         </div>
                     </div>
-                    <div class="contact-actions">
-                        <button class="btn btn-sm btn-info me-1" title="View" @onclick="() => ViewContact(contact.Id)">
-                            <i class="fa fa-eye"></i>
-                        </button>
-                        <button class="btn btn-sm btn-warning me-1" title="Edit" @onclick="() => EditContact(contact.Id)">
-                            <i class="fa fa-edit"></i>
-                        </button>
-                        <button class="btn btn-sm btn-danger" title="Delete" @onclick="() => DeleteContact(contact.Id)">
-                            <i class="fa fa-trash"></i>
-                        </button>
+                    }
                     </div>
-                </li>
             }
-        </ul>
     }
+</div>
+
+    <div class="bottom-nav">
+        <i class="fa fa-home"></i>
+        <i class="fa fa-comment"></i>
+        <i class="fa fa-user active"></i>
+        <i class="fa fa-cog"></i>
+    </div>
 </div>
 
 @code {
@@ -89,67 +60,14 @@
         public string Phone { get; set; } = "";
         public string Email { get; set; } = "";
     }
-}
 
-<style>
-    .dashboard-header {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 1.5rem;
-    }
-
-        .dashboard-header h2 {
-            margin: 0;
-        }
-
-    .dashboard-actions {
-        display: flex;
-        gap: 0.5rem;
-        align-items: center;
-    }
-
-    .summary-cards {
-        margin-bottom: 1.5rem;
-    }
-
-    .summary-card {
-        min-width: 200px;
-        display: inline-block;
-        margin-right: 1rem;
-    }
-
-    .contacts-list .list-group-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .contact-info .avatar {
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #f0f0f0;
-        border-radius: 50%;
-    }
-
-    .contact-actions button {
-        min-width: 36px;
-    }
-    @@media (max-width: 600px) {
-        .dashboard-header, .dashboard-actions
-
+    private string searchTerm = "";
+    private List<Contact> contacts = new()
     {
-        flex-direction: column;
-        align-items: stretch;
-    }
+        new Contact { Id = 1, Name = "Alice Smith", Phone = "555-1234", Email = "alice@example.com" },
+        new Contact { Id = 2, Name = "Bob Johnson", Phone = "555-5678", Email = "bob@example.com" },
+        new Contact { Id = 3, Name = "Charlie Brown", Phone = "555-8765", Email = "charlie@example.com" }
+    };
 
-    .summary-card {
-        margin-bottom: 1rem;
-    }
 
     }
-</style>

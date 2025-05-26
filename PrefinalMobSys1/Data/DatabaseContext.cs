@@ -34,7 +34,6 @@ namespace PrefinalMobSys1.Data
             database = new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
             //Create tables
             await database.CreateTableAsync<User>();
-
         }
 
         public async Task<List<User>> Users()
