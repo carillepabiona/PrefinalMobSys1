@@ -37,10 +37,6 @@
             if($(this).val().length > 0){
                 $(this).parent().addClass('hasText');
             }
-            $(this).on('change',function(){
-                $(this).parent().removeClass('hasText');
-                if($(this).val().length > 0){
-                    $(this).parent().addClass('hasText');
                 }
             });
         });

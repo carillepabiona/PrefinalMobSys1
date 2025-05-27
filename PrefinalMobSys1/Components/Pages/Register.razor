@@ -1,6 +1,16 @@
 ﻿@page "/register"
+
+<head>
+    <link rel="stylesheet" href="css/registerStyle.css" />
+</head>
+
 <form @onsubmit="RegisterUser">
-    <div class="card enhanced">
+    <div class="register-container">
+        <div class="header-box">
+            <h2>Let’s<br /><strong>Register<br />Your Account</strong></h2>
+            <button type="button" class="close-btn">×</button>
+        </div>
+
         @if (!string.IsNullOrWhiteSpace(StatusMessage))
         {
             <div class="alert alert-@Status">
@@ -8,57 +18,43 @@
                 @StatusMessage
             </div>
         }
-        <fieldset>
-            <legend>Username:</legend>
-            <input class="form-control" type="text" @bind="Model.Username" placeholder="Username" title="Username" />
-        </fieldset>
-        <fieldset>
-            <legend>Password:</legend>
-            <input type="password" @bind="Model.Password" placeholder="Password" title="Password" class="form-control" />
-        </fieldset>
-        <fieldset>
-            <legend>First Name:</legend>
-            <input class="form-control" type="text" @bind="Model.FirstName" placeholder="First Name" title="First Name" />
-        </fieldset>
-        <fieldset>
-            <legend>Last Name:</legend>
-            <input class="form-control" type="text" @bind="Model.LastName" placeholder="Last Name" title="Last Name" />
-        </fieldset>
-        <fieldset>
-            <legend>Mobile:</legend>
-            <input class="form-control" type="text" @bind="Model.MobileNumber" placeholder="Mobile" title="Mobile" />
-        </fieldset>
-        <fieldset>
-            <legend>Address:</legend>
-            <textarea class="form-control" @bind="Model.Address" placeholder="Address" title="Address"></textarea>
-        </fieldset>
-        <button type="submit" class="btn btn-warning scaledbutton">
-            <i class="fas fa-user-plus"></i>&nbsp;Register
-        </button>
+
+        <div class="form-group">
+            <div class="input-wrapper">
+                <span class="icon">👤</span>
+                <input type="text" placeholder="Username" @bind="Model.Username" class="form-input" />
+            </div>
+            <div class="input-wrapper">
+                <span class="icon">🔒</span>
+                <input type="password" placeholder="Password" @bind="Model.Password" class="form-input" />
+            </div>
+            <div class="input-wrapper">
+                <span class="icon">👤</span>
+                <input type="text" placeholder="First Name" @bind="Model.FirstName" class="form-input" />
+            </div>
+            <div class="input-wrapper">
+                <span class="icon">👤</span>
+                <input type="text" placeholder="Last Name" @bind="Model.LastName" class="form-input" />
+            </div>
+            <div class="input-wrapper">
+                <span class="icon">📞</span>
+                <input type="text" placeholder="Mobile" @bind="Model.MobileNumber" class="form-input" />
+            </div>
+            <div class="input-wrapper">
+                <span class="icon">🏠</span>
+                <textarea placeholder="Address" @bind="Model.Address" class="form-input" rows="2"></textarea>
+            </div>
+        </div>
+
+        <div class="terms">
+            <input type="checkbox" id="agreeTerms" />
+            <label for="agreeTerms">I agree to the <a href="#">Terms & Privacy</a></label>
+        </div>
+
+        <button type="submit" class="signup-btn">Sign Up</button>
+
+        <p class="signin-text">
+            Have an account? <a href="/login">Sign In</a>
+        </p>
     </div>
 </form>
-
-<script>
-    $(function(){
-        $('.form-control').on('focus',function(){
-            $(this).attr('placeholder','');
-            $(this).parent().addClass('hasFocus');
-        });
-        $('.form-control').on('blur',function(){
-            $(this).attr('placeholder',$(this).attr('title'));
-            $(this).parent().removeClass('hasFocus');
-        });
-        $('.form-control').each(function(){
-            $(this).parent().removeClass('hasText');
-            if($(this).val().length > 0){
-                $(this).parent().addClass('hasText');
-            }
-            $(this).on('change',function(){
-                $(this).parent().removeClass('hasText');
-                if($(this).val().length > 0){
-                    $(this).parent().addClass('hasText');
-                }
-            });
-        });
-    });
-</script>
