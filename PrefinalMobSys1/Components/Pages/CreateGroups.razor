@@ -1,0 +1,143 @@
+﻿@page "/creategroups"
+@using PrefinalMobSys1.Models
+@using PrefinalMobSys1.Services
+@inject GroupSelectionService GroupService
+@inject NavigationManager NavigationManager
+@using SelectableContact = PrefinalMobSys1.Models.SelectableContact
+
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/createGroupStyle.css">
+</head>
+
+<div style="font-family: Arial, sans-serif; max-width: 500px; margin: 20px auto; padding: 10px;">
+
+    <h3 style="display: flex; align-items: center; gap: 8px; color: #4c8479;">
+        <i class="fa fa-users"></i> Created Groups
+    </h3>
+
+    @if (Groups.Any())
+    {
+        @foreach (var group in Groups)
+        {
+            <div style="padding: 12px; background: linear-gradient(to right, #e6f0ee, #f7fbfa); border: 1px solid #bcd1cc; border-radius: 6px; margin-bottom: 15px; color: #2e4c47;">
+                <div style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;"
+                     @onclick='() => NavigationManager.NavigateTo($"/groupdetails/{Uri.EscapeDataString(group.Name)}")'>
+                    <div>
+                        <strong>@group.Name</strong> (@group.Members.Count members)
+                    </div>
+                </div>
+
+                @if (group.IsExpanded && group.Members?.Any() == true)
+                {
+                    <ul style="margin-top: 8px;">
+                        @foreach (var member in group.Members)
+                        {
+                            <li>@member.Name (@member.Number)</li>
+                        }
+                    </ul>
+                }
+            </div>
+        }
+    }
+    else
+    {
+        <div style="padding: 12px; background: #f0f7f6; border: 1px solid #bcd1cc; border-radius: 6px; margin-bottom: 20px; color: #5e6e6a;">
+            <p style="margin: 0;">No groups created yet.</p>
+        </div>
+    }
+
+    <h3 style="color: #4c8479;">Create New Group</h3>
+    <button @onclick="ToggleForm"
+            style="background: linear-gradient(to right, #4c8479, #6da398); border: none; color: white; padding: 8px 14px; border-radius: 5px; cursor: pointer; font-size: 1rem; margin-bottom: 15px;">
+        + Create Group
+    </button>
+
+    @if (showForm)
+    {
+        <div style="margin-top: 10px; border: 1px solid #bcd1cc; padding: 15px; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); background: #f9fdfc;">
+            <label style="font-weight: 600; color: #2e4c47;">Group Name</label><br />
+            <input @bind="newGroupName"
+                   placeholder="Enter group name"
+                   style="width: 100%; padding: 8px; margin: 8px 0 15px 0; border: 1px solid #a5c0bb; border-radius: 5px; font-size: 1rem;" />
+
+            <button @onclick="NavigateToSelectMembers"
+                    style="background: linear-gradient(to right, #4c8479, #6da398); color: white; border: none; padding: 8px 14px; border-radius: 5px; cursor: pointer; margin-bottom: 15px; font-size: 1rem;">
+                + Add member
+            </button>
+
+            <div style="display: flex; justify-content: flex-end; gap: 12px;">
+                <button @onclick="ToggleForm"
+                        style="background-color: #e74c3c; border: none; color: white; padding: 8px 14px; border-radius: 5px; cursor: pointer;">
+                    Cancel
+                </button>
+
+                <button @onclick="CreateGroup"
+                        style="background: linear-gradient(to right, #4c8479, #6da398); border: none; color: white; padding: 8px 14px; border-radius: 5px; cursor: pointer;">
+                    Save
+                </button>
+            </div>
+        </div>
+    }
+</div>
+
+
+@code {
+    private bool showForm = false;
+    private string newGroupName;
+
+    private List<GroupSelectionService.Group> Groups => GroupService.Groups;
+
+    private void ToggleForm()
+    {
+        showForm = !showForm;
+        if (!showForm)
+        {
+            newGroupName = string.Empty;
+            GroupService.SelectedContacts.Clear();
+        }
+    }
+
+    private void NavigateToSelectMembers()
+    {
+        GroupService.GroupName = newGroupName;
+        NavigationManager.NavigateTo("/selectmembers");
+    }
+
+    private void CreateGroup()
+    {
+        if (!string.IsNullOrWhiteSpace(newGroupName))
+        {
+            GroupService.GroupName = newGroupName;
+
+            GroupService.Groups.Add(new GroupSelectionService.Group
+                {
+                    Name = GroupService.GroupName,
+                    Members = new List<SelectableContact>(GroupService.SelectedContacts)
+                });
+
+            newGroupName = "";
+            ToggleForm();
+        }
+    }
+
+    private void ToggleGroup(GroupSelectionService.Group group)
+    {
+        group.IsExpanded = !group.IsExpanded;
+    }
+
+    protected override void OnInitialized()
+    {
+        if (!string.IsNullOrWhiteSpace(GroupService.GroupName) && GroupService.SelectedContacts.Any())
+        {
+            GroupService.Groups.Add(new GroupSelectionService.Group
+                {
+                    Name = GroupService.GroupName,
+                    Members = new List<SelectableContact>(GroupService.SelectedContacts)
+                });
+
+            GroupService.GroupName = string.Empty;
+            GroupService.SelectedContacts.Clear();
+        }
+    }
+}

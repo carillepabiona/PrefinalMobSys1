@@ -1,0 +1,177 @@
+﻿@page "/selectmembers"
+@using PrefinalMobSys1.Models;
+@using PrefinalMobSys1.Services;
+@inject PrefinalMobSys1.Data.DatabaseContext Db
+@inject NavigationManager NavigationManager
+@inject GroupSelectionService GroupService
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid #eee; background-color: #f9f9f9; font-weight: 600; font-size: 1.2rem; font-family: Arial, sans-serif;">
+    <span>Select Members</span>
+    <button style="background: #4CAF50; border: none; color: white; padding: 6px 12px; border-radius: 4px; cursor: pointer;"
+            @onclick="ConfirmSelection"
+            title="Confirm selection"
+            disabled="@(contacts == null || !contacts.Any(c => c.IsSelected))">
+        <i class="fas fa-check"></i>
+    </button>
+</div>
+
+<div style="padding: 12px 16px; border-bottom: 1px solid #eee; font-family: Arial, sans-serif;">
+    <input type="text"
+           placeholder="Search contacts..."
+           style="width: 100%; padding: 8px 12px; border-radius: 20px; border: 1px solid #ccc; outline: none; font-size: 1rem;"
+           @oninput="OnSearchChanged" />
+</div>
+
+<div style="max-height: calc(100vh - 184px); overflow-y: auto; font-family: Arial, sans-serif; padding-bottom: 80px;">
+    @if (contacts == null)
+    {
+        <div style="padding: 20px; text-align:center; color: #888;">Loading contacts...</div>
+    }
+    else if (!filteredContacts.Any())
+    {
+        <div style="padding: 20px; text-align:center; color: #888;">No contacts found.</div>
+    }
+    else
+    {
+        @foreach (var contact in filteredContacts)
+        {
+            <div style="display: flex; align-items: center; padding: 10px 16px; border-bottom: 1px solid #f0f0f0;">
+                <input type="checkbox" @bind="contact.IsSelected" style="margin-right: 12px; width: 18px; height: 18px; cursor: pointer;" />
+                <div style="width: 40px; height: 40px; border-radius: 50%; overflow: hidden; margin-right: 12px; flex-shrink: 0;">
+                    <img src="imgs/user.jpeg" alt="avatar" style="width: 100%; height: 100%; object-fit: cover;" />
+                </div>
+                <div style="flex-grow: 1;">
+                    <div style="font-weight: 600; font-size: 1rem; color: #333;">@contact.Name</div>
+                    <div style="font-size: 0.9rem; color: #666;">@contact.Number</div>
+                </div>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div style="color: red; background-color: #ffe6e6; padding: 10px 16px; border-radius: 6px; margin: 10px 16px; font-weight: bold;">
+                <i class="fas fa-exclamation-circle"></i> @errorMessage
+            </div>
+        }
+    }
+</div>
+
+<footer style="
+    position: fixed;
+    bottom: 50px; /* height of the .bottom-nav */
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    border-top: 1px solid #ddd;
+    padding: 12px 16px;
+    display: flex;
+    gap: 12px;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+    font-family: Arial, sans-serif;
+    z-index: 1001; /* higher than .bottom-nav's 1000 */
+">
+    <button style="
+        background: #e74c3c;
+        border: none;
+        color: white;
+        padding: 10px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        flex-grow: 1;
+    " @onclick="CancelSelection" title="Cancel selection">
+        <i class="fas fa-times"></i> Cancel
+    </button>
+    <button @onclick="ConfirmSelection"
+            disabled="@(contacts == null || !contacts.Any(c => c.IsSelected) || string.IsNullOrWhiteSpace(GroupService.GroupName))"
+            title="Confirm selection"
+            style="background: #3498db; border: none; color: white; padding: 10px 16px; border-radius: 6px; cursor: pointer; flex-grow: 1;">
+        <i class="fas fa-check-circle"></i> Confirm
+    </button>
+
+</footer>
+
+@code {
+    private List<SelectableContact> contacts;
+    private List<SelectableContact> filteredContacts = new();
+
+    private string errorMessage = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var dbContacts = await Db.GetPersons();
+            contacts = dbContacts.Select(p => new SelectableContact
+                {
+                    Id = p.ID,
+                    Name = p.Name,
+                    Number = p.Number,
+                    IsSelected = false
+                }).ToList();
+
+            filteredContacts = contacts;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to load contacts: {ex.Message}";
+        }
+    }
+
+    private void OnSearchChanged(ChangeEventArgs e)
+    {
+        var search = e.Value?.ToString()?.ToLower() ?? "";
+        filteredContacts = string.IsNullOrWhiteSpace(search)
+            ? contacts
+            : contacts.Where(c => c.Name.ToLower().Contains(search) || (c.Number?.ToLower().Contains(search) ?? false)).ToList();
+
+        StateHasChanged();
+    }
+
+    private async Task ConfirmSelection()
+    {
+        errorMessage = string.Empty;
+
+        if (string.IsNullOrWhiteSpace(GroupService.GroupName))
+        {
+            errorMessage = "Please enter a group name before adding members.";
+            return;
+        }
+
+        var selected = contacts.Where(c => c.IsSelected).ToList();
+
+        if (selected.Count == 0)
+        {
+            errorMessage = "Please select at least one contact.";
+            return;
+        }
+
+        try
+        {
+            foreach (var selectedContact in selected)
+            {
+                var member = new GroupMember
+                    {
+                        PersonID = selectedContact.Id,
+                        GroupID = GroupService.CurrentGroupID
+                    };
+
+                await Db.AddGroupMemberAsync(member);
+            }
+
+            GroupService.SelectedContacts = selected;
+            NavigationManager.NavigateTo("/creategroups");
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to add group members: {ex.Message}";
+        }
+    }
+
+
+    private void CancelSelection()
+    {
+        NavigationManager.NavigateTo("/creategroups");
+    }
+}

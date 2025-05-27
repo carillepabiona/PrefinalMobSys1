@@ -1,0 +1,79 @@
+﻿@page "/settings"
+@using PrefinalMobSys1.Services;
+@inject ThemeService ThemeService
+@inject NavigationManager NavigationManager
+
+
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/settingsStyle.css">
+</head>
+<h3>Choose Theme</h3>
+
+<div class="palette-container">
+    @foreach (var theme in Themes)
+    {
+        <button class="color-button" style="background-color:@GetThemeColor(theme)" @onclick="@(() => ChangeTheme(theme))" title="@theme">
+            @if (theme == ThemeService.CurrentTheme)
+            {
+                <span class="checkmark">✓</span>
+            }
+        </button>
+    }
+</div>
+
+
+@code {
+    private List<string> Themes = new()
+    {
+        "light", "dark", "blue", "pink", "green", "purple", "orange", "teal"
+    };
+
+    private void ChangeTheme(string theme)
+    {
+        ThemeService.SetTheme(theme);
+    }
+
+    private string GetThemeColor(string theme) => theme switch
+    {
+        "light" => "#ffffff",
+        "dark" => "#121212",
+        "blue" => "#1E90FF",
+        "pink" => "#FF69B4",
+        "green" => "#28a745",
+        "purple" => "#800080",
+        "orange" => "#FFA500",
+        "teal" => "#008080",
+        _ => "#ffffff"
+    };
+
+    private string GetNavButtonColor(string navPath)
+    {
+        var currentUri = NavigationManager.Uri;
+        var baseUri = NavigationManager.BaseUri;
+        var relativePath = currentUri.StartsWith(baseUri) ? currentUri[baseUri.Length..] : currentUri;
+
+        if (!relativePath.StartsWith("/"))
+            relativePath = "/" + relativePath;
+
+        bool isActive = relativePath == navPath;
+
+        if (isActive)
+        {
+            // Active icon: theme color + bold
+            return $"color: {GetThemeColor(ThemeService.CurrentTheme)}; font-weight: bold;";
+        }
+        else
+        {
+            // Inactive icon: always gray
+            return "color: gray;";
+        }
+    }
+
+}
+
+
+
+
+
+

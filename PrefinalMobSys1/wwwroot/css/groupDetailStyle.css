@@ -1,0 +1,400 @@
+﻿/* ---------- Confirmation Modal Styles ---------- */
+.group-title {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.group-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.3rem;
+    color: #2980b9;
+    padding: 6px 10px;
+    transition: color 0.3s ease;
+}
+
+    .icon-button:hover {
+        color: #1c5980;
+    }
+
+.ellipsis-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 6px 10px;
+}
+
+.dropdown-container {
+    position: relative;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 30px;
+    right: 0;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    list-style: none;
+    padding: 5px 0;
+    margin: 0;
+    min-width: 180px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+    .dropdown-menu li {
+        padding: 10px 15px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #333;
+        transition: background-color 0.2s ease;
+    }
+
+        .dropdown-menu li:hover {
+            background-color: #f6f6f6;
+        }
+
+.animated {
+    animation: fadeIn 0.2s ease forwards;
+}
+
+.member-list {
+    margin-top: 10px;
+    padding-left: 20px;
+    color: #444;
+}
+
+.back-button {
+    margin-top: 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+    .back-button:hover {
+        background-color: #2a80b9;
+    }
+
+.not-found {
+    color: #888;
+    font-style: italic;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1100;
+}
+
+.modal-dialog {
+    background: white;
+    padding: 25px 30px;
+    border-radius: 8px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    text-align: center;
+    max-width: 320px;
+}
+
+.confirm-btn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin: 12px 10px 0 0;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background-color 0.3s ease;
+}
+
+    .confirm-btn:hover {
+        background-color: #c0392b;
+    }
+
+.cancel-btn {
+    background-color: #aaa;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin-top: 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background-color 0.3s ease;
+}
+
+    .cancel-btn:hover {
+        background-color: #888;
+    }
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* Modal overlay for options & delete */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(44, 62, 80, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+/* Modal dialog base */
+.modal-dialog {
+    background: white;
+    border-radius: 12px;
+    padding: 28px 32px;
+    max-width: 360px;
+    width: 90%;
+    box-shadow: 0 10px 30px rgba(44, 62, 80, 0.25);
+    text-align: center;
+    font-size: 1.1rem;
+    color: #34495e;
+}
+
+/* Options modal specific styles */
+.options-modal {
+    padding: 20px 24px;
+    max-width: 280px;
+}
+
+/* Options list inside modal */
+.options-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+}
+
+    .options-list li {
+        padding: 12px 16px;
+        font-size: 1rem;
+        color: #2c3e50;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-radius: 8px;
+        transition: background-color 0.2s ease;
+    }
+
+        .options-list li:hover {
+            background-color: #ecf0f1;
+        }
+
+/* Cancel button below options */
+.cancel-btn {
+    background-color: #bdc3c7;
+    color: #2c3e50;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgb(189 195 199 / 0.5);
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+    .cancel-btn:hover {
+        background-color: #95a5a6;
+    }
+
+/* Re-use confirm-btn and modal-buttons from previous CSS */
+.modal-buttons {
+    margin-top: 24px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.confirm-btn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgb(231 76 60 / 0.4);
+    transition: background-color 0.3s ease;
+}
+
+    .confirm-btn:hover {
+        background-color: #c0392b;
+    }
+
+.group-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+}
+
+.menu-icon {
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #2980b9;
+}
+
+.modal-menu {
+    position: absolute;
+    top: 2.4rem;
+    right: 0;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    width: 160px;
+    z-index: 1000;
+}
+
+    .modal-menu > div {
+        padding: 10px 16px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: background-color 0.2s ease;
+    }
+
+        .modal-menu > div:hover {
+            background-color: #f0f0f0;
+        }
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.5); /* Slightly darker for better focus */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000; /* High enough */
+}
+
+.modal-dialog {
+    background: #fff;
+    border-radius: 12px;
+    padding: 28px 32px;
+    max-width: 360px;
+    width: 90%;
+    box-shadow: 0 10px 30px rgba(44, 62, 80, 0.25);
+    text-align: center;
+    font-size: 1.1rem;
+    color: #34495e;
+    animation: fadeInScale 0.25s ease forwards;
+    user-select: none; /* Prevent text selection */
+}
+
+    /* Title for confirmation */
+    .modal-dialog h3 {
+        margin: 0 0 15px 0;
+        font-weight: 700;
+        font-size: 1.6rem;
+        color: #e74c3c;
+    }
+
+    /* Confirmation message */
+    .modal-dialog p {
+        margin-bottom: 25px;
+        font-size: 1.15rem;
+        color: #2c3e50;
+    }
+
+/* Buttons container */
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* Confirm button */
+.confirm-btn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgb(231 76 60 / 0.5);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .confirm-btn:hover {
+        background-color: #c0392b;
+        box-shadow: 0 6px 16px rgb(192 57 43 / 0.7);
+    }
+
+/* Cancel button */
+.cancel-btn {
+    background-color: #95a5a6;
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgb(149 165 166 / 0.5);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .cancel-btn:hover {
+        background-color: #7f8c8d;
+        box-shadow: 0 6px 14px rgb(127 140 141 / 0.7);
+    }
+
+/* Fade and scale animation */
+@keyframes fadeInScale {
+    0% {
+        opacity: 0;
+        transform: scale(0.85);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

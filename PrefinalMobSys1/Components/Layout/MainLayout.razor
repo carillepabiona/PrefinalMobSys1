@@ -1,9 +1,13 @@
-﻿@inherits LayoutComponentBase
+﻿@using PrefinalMobSys1.Components
+@using PrefinalMobSys1.Services;
+@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+@inject ThemeService ThemeService
 <div class="page">
     @*<div class="sidebar">
         <NavMenu />
     </div>*@ 
-
+    @**@
     <main>
         <div class="topbar">
             <span class="leftside">
@@ -23,7 +27,26 @@
         <article class="content px-4" onclick="hideMenu()" style="margin-top: 70px;">
             @Body
         </article>
+        <div class="bottom-nav">
+            <button class="nav-btn" @onclick="@(() => NavigationManager.NavigateTo("/home"))" aria-label="Home"
+                    style="@GetNavButtonColor("/home")">
+                <i class="fa fa-home" ></i>
+            </button>
+            <button class="nav-btn" @onclick="@(() => NavigationManager.NavigateTo("/creategroups"))" aria-label="Create Groups"
+                    style="@GetNavButtonColor("/creategroups")">
+                <i class="fa fa-users"></i>
+            </button>
+            <button class="nav-btn" @onclick="@(() => NavigationManager.NavigateTo("/"))" aria-label="Profile"
+                    style="@GetNavButtonColor("/")">
+                <i class="fa fa-user"></i>
+            </button>
+            <button class="nav-btn" @onclick="@(() => NavigationManager.NavigateTo("/settings"))" aria-label="Settings"
+                    style="@GetNavButtonColor("/settings")">
+                <i class="fa fa-cog"></i>
+            </button>
+        </div>
     </main>
+
 </div>
 <script>
     function toggleMenu() {
@@ -44,3 +67,51 @@
         $('#btnMenuClose').hide();
     }
 </script>
+
+@code{
+    private List<string> Themes = new()
+    {
+        "light", "dark", "blue", "pink", "green", "purple", "orange", "teal"
+    };
+
+    private void ChangeTheme(string theme)
+    {
+        ThemeService.SetTheme(theme);
+    }
+    private string GetThemeColor(string theme) => theme switch
+    {
+        "light" => "#ffffff",
+        "dark" => "#121212",
+        "blue" => "#1E90FF",
+        "pink" => "#FF69B4",
+        "green" => "#28a745",
+        "purple" => "#800080",
+        "orange" => "#FFA500",
+        "teal" => "#008080",
+        _ => "#ffffff"
+    };
+    private string GetNavButtonColor(string navPath)
+    {
+        var currentUri = NavigationManager.Uri;
+        var baseUri = NavigationManager.BaseUri;
+        var relativePath = currentUri.StartsWith(baseUri) ? currentUri[baseUri.Length..] : currentUri;
+
+        if (!relativePath.StartsWith("/"))
+            relativePath = "/" + relativePath;
+
+        bool isActive = relativePath == navPath;
+
+        if (isActive)
+        {
+            // Special handling for light theme to use black icon color
+            var currentTheme = ThemeService.CurrentTheme;
+            var color = currentTheme == "light" ? "black" : GetThemeColor(currentTheme);
+            return $"color: {color}; font-weight: bold;";
+        }
+        else
+        {
+            return "color: gray;";
+        }
+    }
+
+}

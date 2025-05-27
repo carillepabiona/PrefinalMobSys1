@@ -46,6 +46,49 @@ main {
             margin-left: 0;
         }
 }
+:root {
+    --text-color: #333;
+    --nav-icon-color: #666;
+    --nav-icon-active-color: #ff6b6b;
+}
+
+body.dark {
+    --text-color: #ccc;
+    --nav-icon-color: gray; /* Icons become gray in black theme */
+    --nav-icon-active-color: gray; /* Active icons also stay gray */
+}
+
+/*  bottom-nav fixed at bottom of viewport and NOT scroll, use below: */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background-color: #fff;
+    border-top: 1px solid #ccc;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1000;
+}
+
+    .bottom-nav .nav-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+        font-size: 24px;
+        color: #666;
+    }
+
+        .bottom-nav .nav-btn.active,
+        .bottom-nav .nav-btn:hover {
+            color: #ff6b6b;
+            outline: none;
+        }
+
+
 
 @media (min-width: 641px) {
     .page {

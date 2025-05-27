@@ -30,6 +30,16 @@ namespace PrefinalMobSys1.Models
 
         public string Photo { get; set; }
 
+        public string WorkInfo { get; set; }
+        public string Email { get; set; }
+        public string Relationships { get; set; }
+        public string Groups { get; set; }
+
+        // existing properties
+        public bool IsFavorite { get; set; }
+
+        public int PersonID { get; set; }  // FK to Person table
+
         [NotNull]
         public bool IsDeleted { get; set; }
         public string CreatedBy { get; set; }

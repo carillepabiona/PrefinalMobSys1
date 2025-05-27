@@ -1,0 +1,94 @@
+﻿@using PrefinalMobSys1.Services
+@inject ThemeService ThemeService
+@inject NavigationManager NavigationManager
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+<style>
+    .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 50px;
+        background-color: #fff;
+        border-top: 1px solid #ccc;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        z-index: 1000;
+    }
+
+        .bottom-nav .nav-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            font-size: 24px;
+        }
+
+            .bottom-nav .nav-btn:focus {
+                outline: none;
+            }
+
+</style>
+<div class="bottom-nav">
+    <button class="nav-btn" @onclick="@(() => NavigateTo("/home"))" aria-label="Home"
+            style="@GetNavButtonColor("/home")">
+        <i class="fa fa-home"></i>
+    </button>
+    <button class="nav-btn" @onclick="@(() => NavigateTo("/creategroups"))" aria-label="Create Groups"
+            style="@GetNavButtonColor("/creategroups")">
+        <i class="fa fa-users"></i>
+    </button>
+    <button class="nav-btn" @onclick="@(() => NavigateTo("/"))" aria-label="Profile"
+            style="@GetNavButtonColor("/")">
+        <i class="fa fa-user"></i>
+    </button>
+    <button class="nav-btn" @onclick="@(() => NavigateTo("/settings"))" aria-label="Settings"
+            style="@GetNavButtonColor("/settings")">
+        <i class="fa fa-cog"></i>
+    </button>
+</div>
+
+@code {
+    private void NavigateTo(string uri)
+    {
+        NavigationManager.NavigateTo(uri);
+    }
+
+    private string GetThemeColor(string theme) => theme switch
+    {
+        "light" => "#ffffff",
+        "dark" => "#121212",
+        "blue" => "#1E90FF",
+        "pink" => "#FF69B4",
+        "green" => "#28a745",
+        "purple" => "#800080",
+        "orange" => "#FFA500",
+        "teal" => "#008080",
+        _ => "#ffffff"
+    };
+
+    private string GetNavButtonColor(string navPath)
+    {
+        var currentUri = NavigationManager.Uri;
+        var baseUri = NavigationManager.BaseUri;
+        var relativePath = currentUri.StartsWith(baseUri) ? currentUri[baseUri.Length..] : currentUri;
+
+        if (!relativePath.StartsWith("/"))
+            relativePath = "/" + relativePath;
+
+        bool isActive = relativePath == navPath;
+
+        if (isActive)
+        {
+            // Active icon: theme color + bold
+            return $"color: {GetThemeColor(ThemeService.CurrentTheme)}; font-weight: bold;";
+        }
+        else
+        {
+            // Inactive icon: always gray
+            return "color: gray;";
+        }
+    }
+}

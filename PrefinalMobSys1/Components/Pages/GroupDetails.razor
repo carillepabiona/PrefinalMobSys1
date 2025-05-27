@@ -1,0 +1,116 @@
+﻿@page "/groupdetails/{GroupName}"
+@using PrefinalMobSys1.Models
+@using PrefinalMobSys1.Services
+@inject GroupSelectionService GroupService
+@inject NavigationManager NavigationManager
+
+<link rel="stylesheet" href="css/groupDetailStyle.css">
+
+<h3 class="group-title">@GroupName</h3>
+
+<div class="group-actions">
+    <button @onclick="EditMembers" title="Edit Members" class="icon-button">
+        <i class="fa fa-edit"></i>
+    </button>
+
+    <div class="menu-icon" @onclick="ToggleMenu">
+        <i class="fas fa-ellipsis-v"></i>
+    </div>
+
+    <div class="modal-menu" style="@((showMenu ? "display: block;" : "display: none;"))">
+        <div @onclick="ShowDeleteConfirmation"><i class="fa fa-trash"></i> Delete Group</div>
+        <div @onclick="SendMessage"><i class="fa fa-comment"></i> Send Message</div>
+        <div @onclick="SendEmail"><i class="fa fa-envelope"></i> Send Email</div>
+    </div>
+</div>
+
+@if (Group == null)
+{
+    <p class="not-found">Group not found.</p>
+}
+else
+{
+    <ul class="member-list">
+        @foreach (var member in Group.Members)
+        {
+            <li>@member.Name <span class="member-number">(@member.Number)</span></li>
+        }
+    </ul>
+}
+
+<button @onclick="BackToGroups" class="back-button">Back to Groups</button>
+
+@if (showDeleteDialog)
+{
+    <div class="modal-overlay" @onclick="CancelDelete">
+        <div class="modal-dialog" @onclick:stopPropagation>
+            <h3>Confirm Delete</h3>
+            <p>Are you sure you want to delete this group?</p>
+
+            <div class="modal-buttons">
+                <button class="confirm-btn" @onclick="ConfirmDelete">Yes, Delete</button>
+                <button class="cancel-btn" @onclick="CancelDelete">Cancel</button>
+            </div>
+        </div>
+    </div>
+}
+
+
+@code {
+    [Parameter] public string GroupName { get; set; }
+
+    private bool showMenu = false;
+    private bool showDeleteDialog = false;
+    private GroupSelectionService.Group Group;
+
+    protected override void OnInitialized()
+    {
+        Group = GroupService.Groups.FirstOrDefault(g => g.Name == GroupName);
+    }
+
+    private void ToggleMenu() => showMenu = !showMenu;
+
+    private void ShowDeleteConfirmation()
+    {
+        showDeleteDialog = true;
+        showMenu = false;
+    }
+
+    private void ConfirmDelete()
+    {
+        if (Group != null)
+        {
+            GroupService.Groups.Remove(Group);
+            NavigationManager.NavigateTo("/creategroups");
+        }
+    }
+
+    private void CancelDelete() => showDeleteDialog = false;
+
+    private void SendMessage()
+    {
+        showMenu = false;
+        Console.WriteLine($"Send Message to group: {GroupName}");
+    }
+
+    private void SendEmail()
+    {
+        showMenu = false;
+        Console.WriteLine($"Send Email to group: {GroupName}");
+    }
+
+    private void EditMembers()
+    {
+        if (Group != null)
+        {
+            GroupService.GroupName = Group.Name;
+            GroupService.SelectedContacts = new List<SelectableContact>(Group.Members);
+            NavigationManager.NavigateTo("/selectmembers");
+        }
+    }
+
+    private void BackToGroups()
+    {
+        NavigationManager.NavigateTo("/creategroups");
+    }
+}

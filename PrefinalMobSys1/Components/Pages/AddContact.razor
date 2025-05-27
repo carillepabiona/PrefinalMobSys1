@@ -1,0 +1,139 @@
+﻿@page "/addcontact/{personId:int}"
+@inject NavigationManager NavigationManager
+@inject DatabaseContext DbContext
+@using PrefinalMobSys1.Services;
+@using PrefinalMobSys1.Models
+@using PrefinalMobSys1.Data
+
+<head>
+    <link rel="stylesheet" href="css/addContactStyle.css">
+</head>
+
+<div class="create-account-container">
+    <h3>Add Contact</h3>
+
+    <div class="photo-upload">
+        <label for="photoInput">
+            <div class="photo-placeholder">
+                <i class="fa fa-camera" style="font-size:48px;color:#f2766a;"></i>
+                <div style="font-size:14px;color:#f2766a;">Add Photo</div>
+            </div>
+        </label>
+        <input type="file" id="photoInput" style="display:none" @onchange="OnPhotoSelected" />
+        <div class="photo-note">Will only be saved on the phone</div>
+    </div>
+
+    <div class="form-field">
+        <i class="fa fa-user icon"></i>
+        <input class="form-input" placeholder="Full Name" @bind="newPerson.Name" />
+    </div>
+
+    <div class="form-field">
+        <i class="fa fa-phone icon"></i>
+        <input class="form-input" placeholder="Mobile Number" @bind="newPerson.Number" />
+    </div>
+
+    <div class="form-field">
+        <i class="fa fa-map-marker icon"></i>
+        <input class="form-input" placeholder="Address" @bind="newPerson.Address" />
+    </div>
+
+    
+
+    <div class="add-other-field" @onclick="ShowOtherFields">Add Other Field</div>
+
+    @if (showOtherFields)
+    {
+        <div class="form-field">
+            <i class="fa fa-briefcase icon"></i>
+            <input class="form-input" placeholder="Work Info" @bind="newPerson.WorkInfo" />
+        </div>
+        <div class="form-field">
+            <i class="fa fa-envelope icon"></i>
+            <input class="form-input" placeholder="Email" @bind="newPerson.Email" />
+        </div>
+        <div class="form-field">
+            <i class="fa fa-users icon"></i>
+            <input class="form-input" placeholder="Relationships" @bind="newPerson.Relationships" />
+        </div>
+        <div class="form-field">
+            <i class="fa fa-list icon"></i>
+            <input class="form-input" placeholder="Groups" @bind="newPerson.Groups" />
+        </div>
+    }
+
+    <div class="button-group">
+        <button class="save-button" @onclick="SavePersonAsync">Save</button>
+        <button class="cancel-button" @onclick="Cancel">Cancel</button>
+    </div>
+
+    @if (!string.IsNullOrEmpty(saveMessage))
+    {
+        <div class="save-message">@saveMessage</div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int personId { get; set; }
+
+    private Persons newPerson;
+    private bool showOtherFields = false;
+
+    protected override void OnInitialized()
+    {
+        newPerson = new Persons
+            {
+                IsDeleted = false,
+                CreatedDate = DateTime.Now,
+                ModifiedDate = DateTime.Now
+            };
+    }
+
+    private void ShowOtherFields()
+    {
+        showOtherFields = true;
+    }
+
+    private string saveMessage;
+
+    private async Task SavePersonAsync()
+    {
+        try
+        {
+            if (newPerson != null)
+            {
+                newPerson.ModifiedDate = DateTime.Now;
+
+                if (newPerson.ID == 0)
+                {
+                    newPerson.CreatedDate = DateTime.Now;
+                }
+
+                await DbContext.SavePerson(newPerson);
+                saveMessage = "Contact saved successfully!";
+
+                // Optional: clear message after 3 seconds
+              
+                saveMessage = null;
+
+                // Optional: navigate after save
+                NavigationManager.NavigateTo("/");
+            }
+        }
+        catch (Exception ex)
+        {
+            saveMessage = $"Error saving contact: {ex.Message}";
+        }
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+
+    private void OnPhotoSelected(ChangeEventArgs e)
+    {
+        // Handle photo selection if needed
+    }
+}

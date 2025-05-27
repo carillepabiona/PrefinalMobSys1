@@ -1,0 +1,128 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(to bottom, #c3d2cb, #88a096, #5b8373, #3f5e52);
+    font-family: 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    position: relative;
+}
+
+.login-container {
+    width: 360px;
+    text-align: center;
+    position: absolute;
+    top: 100px; /* Move lower: adjust percentage for desired height */
+    left: 50%;
+    transform: translateX(-50%); /* Center horizontally */
+}
+
+
+.top-section {
+    padding: 20px;
+}
+
+.top-image {
+    width: 100%;
+    max-height: 240px;
+    object-fit: contain;
+}
+
+.title {
+    color: #ffffff;
+    font-size: 16px;
+    letter-spacing: 1px;
+    margin-bottom: 25px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    background: transparent;
+    border: 1px solid #ffffff;
+    border-radius: 25px;
+    padding: 10px 15px;
+    color: white;
+}
+
+    .input-wrapper .icon {
+        margin-right: 10px;
+    }
+
+    .input-wrapper input {
+        border: none;
+        background: transparent;
+        color: #eeeeee; /* Updated text color */
+        outline: none;
+        flex: 1;
+        font-size: 14px;
+    }
+    input::placeholder {
+        color: lightgray;
+    }
+.forgot {
+    font-size: 12px;
+    color: #eee;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.action-box {
+    background-color: #ffffff;
+    border-radius: 30px;
+    padding: 25px 20px;
+    margin-top: 25px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.login-btn {
+    background-color: #396c5f;
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    padding: 10px;
+    font-size: 15px;
+    width: 100%;
+    margin-bottom: 10px;
+    cursor: pointer;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+}
+
+.register-btn {
+    background-color: #d7e1dd;
+    color: #333;
+    border: none;
+    border-radius: 25px;
+    padding: 10px;
+    font-size: 15px;
+    width: 100%;
+    cursor: pointer;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+}
+
+.or-text {
+    display: block;
+    font-size: 14px;
+    color: #777;
+    margin: 10px 0;
+}
+
+.alert {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    text-align: center;
+}

@@ -1,60 +1,69 @@
 ﻿@page "/register"
-
 <head>
-    <link rel="stylesheet" href="css/registerStyle.css" />
+    <link rel="stylesheet" href="css/resgisterStyle.css">
 </head>
+<form @onsubmit="RegisterUser" class="register-form">
 
-<form @onsubmit="RegisterUser">
-    <div class="register-container">
-        <div class="header-box">
-            <h2>Let’s<br /><strong>Register<br />Your Account</strong></h2>
-            <button type="button" class="close-btn">×</button>
+    <div class="register-card">
+        <div class="register-header">
+            <h2>
+                Let’s<br /><strong>Register<br />Your Account</strong>
+            </h2>
+            <button type="button"></button>
         </div>
 
         @if (!string.IsNullOrWhiteSpace(StatusMessage))
         {
-            <div class="alert alert-@Status">
+            <div class="status-message">
                 <i class="fa fa-info-circle"></i>&nbsp;
                 @StatusMessage
             </div>
         }
 
-        <div class="form-group">
+        <div class="inputs-container">
             <div class="input-wrapper">
-                <span class="icon">👤</span>
-                <input type="text" placeholder="Username" @bind="Model.Username" class="form-input" />
+                <span>👤</span>
+                <input type="text" placeholder="Username" @bind="Model.Username" />
             </div>
+
             <div class="input-wrapper">
-                <span class="icon">🔒</span>
-                <input type="password" placeholder="Password" @bind="Model.Password" class="form-input" />
+                <span>🔒</span>
+                <input type="password" placeholder="Password" @bind="Model.Password" />
             </div>
+
             <div class="input-wrapper">
-                <span class="icon">👤</span>
-                <input type="text" placeholder="First Name" @bind="Model.FirstName" class="form-input" />
+                <span>👤</span>
+                <input type="text" placeholder="First Name" @bind="Model.FirstName" />
             </div>
+
             <div class="input-wrapper">
-                <span class="icon">👤</span>
-                <input type="text" placeholder="Last Name" @bind="Model.LastName" class="form-input" />
+                <span>👤</span>
+                <input type="text" placeholder="Last Name" @bind="Model.LastName" />
             </div>
+
             <div class="input-wrapper">
-                <span class="icon">📞</span>
-                <input type="text" placeholder="Mobile" @bind="Model.MobileNumber" class="form-input" />
+                <span>📞</span>
+                <input type="text" placeholder="Mobile" @bind="Model.MobileNumber" />
             </div>
+
             <div class="input-wrapper">
-                <span class="icon">🏠</span>
-                <textarea placeholder="Address" @bind="Model.Address" class="form-input" rows="2"></textarea>
+                <span>🏠</span>
+                <textarea placeholder="Address" @bind="Model.Address" rows="2"></textarea>
             </div>
         </div>
 
-        <div class="terms">
+        <div class="checkbox-container">
             <input type="checkbox" id="agreeTerms" />
             <label for="agreeTerms">I agree to the <a href="#">Terms & Privacy</a></label>
         </div>
 
-        <button type="submit" class="signup-btn">Sign Up</button>
+        <button type="submit" class="submit-button">
+            Sign Up
+        </button>
 
-        <p class="signin-text">
+        <p class="footer-text">
             Have an account? <a href="/login">Sign In</a>
         </p>
     </div>
+
 </form>

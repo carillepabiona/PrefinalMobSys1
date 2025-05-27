@@ -1,0 +1,135 @@
+﻿@page "/contact/{Id:int}"
+@using PrefinalMobSys1.Models
+@using PrefinalMobSys1.Data
+@inject NavigationManager NavigationManager
+
+<link href="css/contactStyle.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+@if (person == null)
+{
+        <p>Loading contact details...</p>
+}
+else
+{
+        <div class="profile-header">
+            <img src="@(!string.IsNullOrEmpty(person.ProfileImage) ? person.ProfileImage : "imgs/user.jpeg")" class="profile-img" />
+            <h2 class="contact-name">@person.Name</h2>
+            <p class="contact-location">@person.Address</p>
+
+            <div class="menu-icon" @onclick="ToggleMenu">
+                <i class="fas fa-ellipsis-v"></i>
+            </div>
+
+            <div class="modal-menu" style="@((showMenu ? "display: block;" : "display: none;"))">
+                <div @onclick="ToggleFavorite"><i class="fas fa-star"></i> @(isFavorite ? "Unfavorite" : "Add to Favorite")</div>
+                <div @onclick="HandleEdit"><i class="fas fa-edit"></i> Edit</div>
+                <div @onclick="HandleDelete"><i class="fas fa-trash-alt"></i> Delete</div>
+            </div>
+
+            <div class="tabs">
+                <span class="tab @(activeTab == "details" ? "active" : "")" @onclick="@(() => SetTab("details"))">Details</span>
+                <span class="tab @(activeTab == "calllog" ? "active" : "")" @onclick="@(() => SetTab("calllog"))">Call log</span>
+            </div>
+        </div>
+
+    @if (activeTab == "details")
+    {
+                <div class="contact-info">
+                    <div class="info-row">
+                        <div class="info-left">
+                            <i class="fas fa-phone-alt info-icon"></i>
+                            <div>
+                                <div class="info-value">@person.Number</div>
+                                <div class="info-label">Mobile Number</div>
+                            </div>
+                        </div>
+                        <div class="info-actions">
+                            <i class="fas fa-phone action-icon"></i>
+                            <i class="fas fa-sms action-icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-left">
+                            <i class="fas fa-map-marker-alt info-icon"></i>
+                            <div>
+                                <div class="info-value">@person.Address</div>
+                                <div class="info-label">Address</div>
+                            </div>
+                        </div>
+                        <div class="info-actions">
+                            <i class="fas fa-map-marked-alt action-icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-left">
+                            <i class="fas fa-envelope info-icon"></i>
+                            <div>
+                                <div class="info-value">@person.Email</div>
+                                <div class="info-label">Gmail Address</div>
+                            </div>
+                        </div>
+                        <div class="info-actions">
+                            <i class="fas fa-envelope-open-text action-icon"></i>
+                        </div>
+                    </div>
+                </div>
+    }
+    else if (activeTab == "calllog")
+    {
+                <div class="contact-info">
+                    <p style="text-align: center; color: gray;">No call logs available.</p>
+                </div>
+    }
+}
+
+@if (showDeleteConfirmation)
+{
+        <div class="confirmation-dialog">
+            <p>Are you sure you want to delete this contact?</p>
+            <button @onclick="ConfirmDelete">Yes, Delete</button>
+            <button @onclick="CancelDelete">Cancel</button>
+        </div>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+
+    private Persons? person;
+    private bool isFavorite = false;
+    private bool showDeleteConfirmation = false;
+    private bool showMenu = false;
+    private string activeTab = "details";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var persons = await DatabaseContext.Instance.GetPersons();
+        person = persons.FirstOrDefault(p => p.ID == Id && !p.IsDeleted);
+        if (person != null) isFavorite = person.IsFavorite;
+    }
+
+    private void SetTab(string tab) => activeTab = tab;
+    private void ToggleMenu() => showMenu = !showMenu;
+    private void HandleEdit() => NavigationManager.NavigateTo($"/editcontact/{Id}");
+    private void HandleDelete() => showDeleteConfirmation = true;
+
+    private async Task ConfirmDelete()
+    {
+        await DatabaseContext.Instance.DeletePerson(Id);
+        NavigationManager.NavigateTo("/");
+    }
+
+    private void CancelDelete() => showDeleteConfirmation = false;
+
+    private async Task ToggleFavorite()
+    {
+        if (person != null)
+        {
+            isFavorite = !isFavorite;
+            person.IsFavorite = isFavorite;
+            await DatabaseContext.Instance.UpdatePerson(person);
+        }
+    }
+}

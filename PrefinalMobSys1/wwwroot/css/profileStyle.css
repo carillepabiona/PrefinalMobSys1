@@ -1,0 +1,108 @@
+﻿.create-account-container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    text-align: center;
+    font-family: sans-serif;
+    border-radius: 16px;
+    box-shadow: none;
+}
+
+.photo-upload {
+    margin-bottom: 20px;
+}
+
+.photo-placeholder {
+    width: 120px;
+    height: 120px;
+    border: 2px dashed #f2766a;
+    border-radius: 50%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    .photo-placeholder:hover {
+        background-color: #ffe5e0;
+    }
+
+.photo-note {
+    font-size: 12px;
+    color: gray;
+    margin-top: 8px;
+}
+
+.form-field {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding: 12px 0;
+    margin: 15px 0;
+}
+
+.icon {
+    margin-right: 12px;
+    color: #f2766a;
+    font-size: 20px;
+}
+
+.form-input {
+    border: none;
+    outline: none;
+    flex: 1;
+    font-size: 16px;
+    padding: 8px 0;
+    background-color: transparent;
+    text-align: left;
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.save-button, .cancel-button {
+    flex: 1;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: none;
+    margin: 0 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.save-button {
+    background-color: #f2766a;
+    color: white;
+}
+
+    .save-button:hover {
+        background-color: #e76459;
+    }
+
+.cancel-button {
+    background-color: #cccccc;
+    color: black;
+}
+
+    .cancel-button:hover {
+        background-color: #b3b3b3;
+    }
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    border-top: 1px solid #ccc;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    font-size: 1.5rem;
+}

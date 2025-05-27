@@ -1,66 +1,158 @@
 ﻿@page "/"
 @using System.Linq
+@using PrefinalMobSys1.Data
+@using PrefinalMobSys1.Models
+@inject NavigationManager NavigationManager
 
 <head>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css" />
 </head>
 
 <div class="contacts-container">
     <div class="top-bar">
-        <h3>Contacts</h3>
+        <h3><i class="fa fa-address-book"></i> Contacts</h3>
         <button class="add-btn" @onclick="AddContact">+</button>
     </div>
 
     <div class="search-wrapper">
-        <input class="search-input" type="text" placeholder="Search" @bind="searchTerm" />
+        <input class="search-input" type="text" placeholder="Search" @bind="searchTerm" @bind:event="oninput" />
+    </div>
+
+    <div class="profile-card">
+        <h6 class="section-title">My Profile</h6>
+
+        <div class="contact-card" @onclick="NavigateToProfile" style="cursor:pointer;">
+            <div class="avatar">
+                <img src="@GetProfileImage(null)" />
+            </div>
+            <div class="contact-details">
+                <div class="contact-name">@FirstName @LastName</div>
+                <div class="contact-location">Profile Owner</div>
+            </div>
         </div>
 
-    <!-- Contacts List with Letter Grouping -->
-<div class="contacts-list">
-    @if (!FilteredContacts.Any())
-    {
+        @if (FavoriteContacts.Any())
+        {
+            <h6 class="section-title">
+                <i class="fa fa-star" style="font-size: 20px; color: #ff6b6b;"></i> Favorite Contacts
+            </h6>
+            <div class="favorite-contacts">
+                @foreach (var favorite in FavoriteContacts)
+                {
+                    <div class="contact-card" @onclick="() => NavigateToContact(favorite.Id)" style="cursor:pointer;">
+                        <div class="avatar">
+                            <img src="@GetProfileImage(favorite.ProfileImage)" />
+                        </div>
+                        <div class="contact-details">
+                            <div class="contact-name">@favorite.Name</div>
+                            <div class="contact-location">@favorite.Number</div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="contact-card no-clickable">
+                <div class="avatar">
+                    <i class="fa fa-star" style="font-size: 20px; color: #ff6b6b;"></i>
+                </div>
+                <div class="contact-details">
+                    <div class="contact-name">Add your favorite contacts</div>
+                    <div class="contact-location">Mark your go-to people</div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="contacts-list">
+        @if (contacts == null)
+        {
+            <div class="loading">Loading contacts...</div>
+        }
+        else if (!FilteredContacts.Any())
+        {
             <div class="no-contacts">No contacts found.</div>
-    }
-    else
-    {
-            @foreach (var group in FilteredContacts.OrderBy(c => c.Name).GroupBy(c => c.Name.Substring(0, 1).ToUpper()))
+        }
+        else
+        {
+            @foreach (var group in FilteredContacts
+           .OrderBy(c => c.Name)
+           .GroupBy(c => string.IsNullOrEmpty(c.Name) ? "#" : c.Name.Substring(0, 1).ToUpper()))
             {
                 <div class="contact-section">
                     <h4 class="section-header">@group.Key</h4>
                     @foreach (var contact in group)
                     {
-                        <div class="contact-card">
-                        <div class="avatar">
-                                <img src="https://via.placeholder.com/40" />
-                        </div>
+                        <div class="contact-card" @onclick="() => NavigateToContact(contact.Id)" style="cursor:pointer;">
+                            <div class="avatar">
+                                <img src="@GetProfileImage(contact.ProfileImage)" />
+                            </div>
                             <div class="contact-details">
                                 <div class="contact-name">@contact.Name</div>
-                                <div class="contact-location">@contact.Phone</div>
+                                <div class="contact-location">@contact.Number</div>
+                            </div>
                         </div>
-                    </div>
                     }
-                    </div>
+                </div>
             }
-    }
-</div>
+        }
+    </div>
 </div>
 
 @code {
-    public class Contact
+    private string searchTerm = string.Empty;
+    private List<Contact>? contacts;
+
+    private IEnumerable<Contact> FilteredContacts =>
+        string.IsNullOrWhiteSpace(searchTerm)
+            ? contacts ?? Enumerable.Empty<Contact>()
+            : contacts?.Where(c =>
+                (!string.IsNullOrEmpty(c.Name) && c.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)) ||
+                (!string.IsNullOrEmpty(c.Number) && c.Number.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)) ||
+                (!string.IsNullOrEmpty(c.Email) && c.Email.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)) ||
+                (!string.IsNullOrEmpty(c.Address) && c.Address.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)) ||
+                (!string.IsNullOrEmpty(c.Location) && c.Location.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)))
+            ?? Enumerable.Empty<Contact>();
+
+    private IEnumerable<Contact> FavoriteContacts =>
+        contacts?.Where(c => c.IsFavorite).OrderBy(c => c.Name) ?? Enumerable.Empty<Contact>();
+
+    protected override async Task OnInitializedAsync()
     {
-        public int Id { get; set; }
-        public string Name { get; set; } = "";
-        public string Phone { get; set; } = "";
-        public string Email { get; set; } = "";
+        try
+        {
+            var persons = await DatabaseContext.Instance.GetPersons();
+
+            contacts = persons?.Select(p => new Contact
+                {
+                    Id = p.ID,
+                    Name = p.Name ?? string.Empty,
+                    Number = p.Number?.ToString() ?? string.Empty,
+                    Email = p.Email ?? string.Empty,
+                    Address = p.Address ?? string.Empty,
+                    ProfileImage = string.IsNullOrEmpty(p.ProfileImage) ? null : p.ProfileImage,
+                    IsFavorite = p.IsFavorite
+                }).ToList() ?? new List<Contact>();
+        }
+        catch
+        {
+            contacts = new List<Contact>();
+        }
+
+        StateHasChanged();
     }
 
-    private string searchTerm = "";
-    private List<Contact> contacts = new()
-    {
-        new Contact { Id = 1, Name = "Alice Smith", Phone = "555-1234", Email = "alice@example.com" },
-        new Contact { Id = 2, Name = "Bob Johnson", Phone = "555-5678", Email = "bob@example.com" },
-        new Contact { Id = 3, Name = "Charlie Brown", Phone = "555-8765", Email = "charlie@example.com" }
-    };
+    private string GetProfileImage(string? imagePath)
+        => string.IsNullOrEmpty(imagePath) ? "imgs/user.jpeg" : imagePath;
 
+    private string FirstName => AppShellContext.Instance?.CurrentUser?.FirstName ?? "Guest";
+    private string LastName => AppShellContext.Instance?.CurrentUser?.LastName ?? "";
 
-    }
+    private void AddContact() => NavigationManager.NavigateTo("/addcontact/0");
+    private void NavigateToProfile() => NavigationManager.NavigateTo("/profile");
+    private void NavigateToFavorites() => NavigationManager.NavigateTo("/managefavorites");
+    private void NavigateToContact(int id) => NavigationManager.NavigateTo($"/contact/{id}");
+  
+
+}

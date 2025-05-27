@@ -1,44 +1,76 @@
 ﻿@page "/login"
-<form @onsubmit="LoginUser">
-    <div class="card enhanced">
-        @if (!string.IsNullOrWhiteSpace(StatusMessage))
-        {
-            <div class="alert alert-@Status">
-                <i class="fa fa-info-circle"></i>&nbsp;
-                @StatusMessage
-            </div>
-        }
-        <fieldset>
-            <legend>Username:</legend>
-            <input class="form-control" type="text" @bind="Model.Username" placeholder="Username" title="Username" />
-        </fieldset>
-        <fieldset>
-            <legend>Password:</legend>
-            <input type="password" @bind="Model.Password" placeholder="Password" title="Password" class="form-control ">
-        </fieldset>
-        <button type="submit" class="btn btn-warning scaledbutton">
-            <i class="fas fa-sign-in-alt"></i>&nbsp;Log In
-        </button>
+@inject NavigationManager Navigation
+
+<head>
+    <link rel="stylesheet" href="css/loginStyle.css">
+</head>
+
+<div class="login-container">
+    <div class="top-section">
+        <img src="imgs/ab.png" alt="Illustration" class="top-image" />
     </div>
-</form>
+
+    <h2 class="title">CONTACT MANAGER</h2>
+
+    @if (!string.IsNullOrWhiteSpace(StatusMessage))
+    {
+        <div class="alert alert-@Status">
+            <i class="fa fa-info-circle"></i> @StatusMessage
+        </div>
+    }
+
+    <form @onsubmit="LoginUser">
+        <div class="form-group">
+            <div class="input-wrapper">
+                <span class="icon">📧</span>
+                <input type="text" placeholder="Email or Phone" @bind="Model.Username"  />
+
+            </div>
+
+            <div class="input-wrapper">
+                <span class="icon">🔒</span>
+                <input type="password" placeholder="Password" @bind="Model.Password" />
+            </div>
+        </div>
+
+        <a href="#" class="forgot">Forgot Password?</a>
+
+        <div class="action-box">
+            <button type="submit" class="login-btn">Login</button>
+            <span class="or-text">or</span>
+            <button type="button" class="register-btn" @onclick="NavigateToRegister">Register Account</button>
+        </div>
+    </form>
+</div>
 
 <script>
-    $(function(){
-        $('.form-control').on('focus',function(){
-            $(this).attr('placeholder','');
+    $(function () {
+        $('.form-control').on('focus', function () {
+            $(this).attr('placeholder', '');
             $(this).parent().addClass('hasFocus');
         });
-        $('.form-control').on('blur',function(){
-            $(this).attr('placeholder',$(this).attr('title'));
+        $('.form-control').on('blur', function () {
+            $(this).attr('placeholder', $(this).attr('title'));
             $(this).parent().removeClass('hasFocus');
         });
-        $('.form-control').each(function(){
+        $('.form-control').each(function () {
             $(this).parent().removeClass('hasText');
-            if($(this).val().length > 0){
+            if ($(this).val().length > 0) {
                 $(this).parent().addClass('hasText');
             }
+            $(this).on('change input', function () {
+                $(this).parent().removeClass('hasText');
+                if ($(this).val().length > 0) {
+                    $(this).parent().addClass('hasText');
                 }
             });
         });
     });
 </script>
+
+@code {
+    private void NavigateToRegister()
+    {
+        Navigation.NavigateTo("/register");
+    }
+}

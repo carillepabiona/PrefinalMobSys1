@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using PrefinalMobSys1.Data;
+using PrefinalMobSys1.Services;
 
 namespace PrefinalMobSys1
 {
@@ -24,6 +25,11 @@ namespace PrefinalMobSys1
 
             builder.Services.AddSingleton<AppShellContext>();
             builder.Services.AddSingleton<DatabaseContext>();
+            builder.Services.AddTransient<UserService>();
+            builder.Services.AddSingleton<GroupSelectionService>();
+            builder.Services.AddSingleton<ThemeService>();
+            builder.Services.AddTransient<GroupService>();
+
             return builder.Build();
         }
     }

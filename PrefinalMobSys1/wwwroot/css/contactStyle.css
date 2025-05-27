@@ -1,0 +1,163 @@
+﻿body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f1f3f6;
+}
+
+.profile-header {
+    text-align: center;
+    padding: 30px 20px 10px;
+    position: relative;
+}
+
+.profile-img {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #eee;
+    margin: 0 auto 10px;
+    display: block;
+}
+
+.contact-name {
+    margin: 8px 0 4px;
+    font-size: 22px;
+    color: #333;
+    text-align: center;
+}
+
+.contact-location {
+    font-size: 14px;
+    color: #888;
+    text-align: center;
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.tab {
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 15px;
+    color: #555;
+    margin: 0 10px;
+}
+
+    .tab.active {
+        border-bottom: 2px solid #ff6b6b;
+        color: #ff6b6b;
+        font-weight: bold;
+    }
+
+/* Contact Info */
+.contact-info {
+    padding: 20px;
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 0;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.info-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex: 1;
+}
+
+.info-icon {
+    font-size: 18px;
+    color: #777;
+}
+
+.info-value {
+    font-size: 16px;
+    color: #333;
+}
+
+.info-label {
+    font-size: 13px;
+    color: #999;
+}
+
+.info-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.action-icon {
+    font-size: 18px;
+    color: #ff6b6b;
+    cursor: pointer;
+}
+
+/* Menu Icon */
+.menu-icon {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 22px;
+    color: #555;
+    cursor: pointer;
+}
+
+/* Modal Menu */
+.modal-menu {
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    width: 160px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+}
+
+    .modal-menu div {
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #333;
+        cursor: pointer;
+    }
+
+        .modal-menu div:hover {
+            background-color: #f1f1f1;
+        }
+
+/* Confirmation Dialog */
+.confirmation-dialog {
+    background-color: white;
+    padding: 20px;
+    margin: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+    .confirmation-dialog button {
+        margin: 10px 8px;
+        padding: 8px 14px;
+        border: none;
+        background-color: #ff6b6b;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+        .confirmation-dialog button:last-child {
+            background-color: #aaa;
+        }

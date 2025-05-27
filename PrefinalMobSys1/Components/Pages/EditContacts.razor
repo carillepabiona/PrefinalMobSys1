@@ -1,0 +1,133 @@
+﻿@page "/editcontact/{personId:int}"
+@inject NavigationManager NavigationManager
+@inject DatabaseContext DbContext
+@using PrefinalMobSys1.Models
+@using PrefinalMobSys1.Data
+
+<head>
+    <link rel="stylesheet" href="css/addContactStyle.css">
+</head>
+
+<div class="create-account-container">
+    <h3>Edit Contact</h3>
+
+    <div class="photo-upload">
+        <label for="photoInput">
+            <div class="photo-placeholder">
+                <i class="fa fa-camera" style="font-size:48px;color:#f2766a;"></i>
+                <div style="font-size:14px;color:#f2766a;">Add Photo</div>
+            </div>
+        </label>
+        <input type="file" id="photoInput" style="display:none" @onchange="OnPhotoSelected" />
+        <div class="photo-note">Will only be saved on the phone</div>
+    </div>
+
+    <div class="form-field">
+        <i class="fa fa-user icon"></i>
+        <input class="form-input" placeholder="Full Name" @bind="editPerson.Name" />
+    </div>
+
+    <div class="form-field">
+        <i class="fa fa-phone icon"></i>
+        <input class="form-input" placeholder="Mobile Number" @bind="editPerson.Number" />
+    </div>
+
+    <div class="form-field">
+        <i class="fa fa-map-marker icon"></i>
+        <input class="form-input" placeholder="Address" @bind="editPerson.Address" />
+    </div>
+
+    <div class="add-other-field" @onclick="ShowOtherFields">Add Other Field</div>
+
+    @if (showOtherFields)
+    {
+        <div class="form-field">
+            <i class="fa fa-briefcase icon"></i>
+            <input class="form-input" placeholder="Work Info" @bind="editPerson.WorkInfo" />
+        </div>
+        <div class="form-field">
+            <i class="fa fa-envelope icon"></i>
+            <input class="form-input" placeholder="Email" @bind="editPerson.Email" />
+        </div>
+        <div class="form-field">
+            <i class="fa fa-users icon"></i>
+            <input class="form-input" placeholder="Relationships" @bind="editPerson.Relationships" />
+        </div>
+        <div class="form-field">
+            <i class="fa fa-list icon"></i>
+            <input class="form-input" placeholder="Groups" @bind="editPerson.Groups" />
+        </div>
+    }
+
+    <div class="form-field">
+        <label>
+            <input type="checkbox" @bind="editPerson.IsFavorite" />
+            Mark as Favorite
+        </label>
+    </div>
+
+    <div class="button-group">
+        <button class="save-button" @onclick="SavePersonAsync">Save</button>
+        <button class="cancel-button" @onclick="Cancel">Cancel</button>
+    </div>
+
+    @if (!string.IsNullOrEmpty(saveMessage))
+    {
+        <div class="save-message">@saveMessage</div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int personId { get; set; }
+
+    private Persons editPerson = new Persons();
+    private bool showOtherFields = false;
+    private string saveMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (personId != 0)
+        {
+            var personList = await DbContext.GetPersons();
+            editPerson = personList.FirstOrDefault(p => p.ID == personId) ?? new Persons();
+        }
+    }
+
+    private void ShowOtherFields()
+    {
+        showOtherFields = true;
+    }
+
+    private async Task SavePersonAsync()
+    {
+        try
+        {
+            editPerson.ModifiedDate = DateTime.Now;
+            if (editPerson.ID == 0)
+            {
+                editPerson.CreatedDate = DateTime.Now;
+            }
+
+            await DbContext.SavePerson(editPerson);
+            saveMessage = "Contact updated successfully!";
+
+            // Optional: Navigate back after short delay
+            NavigationManager.NavigateTo("/");
+        }
+        catch (Exception ex)
+        {
+            saveMessage = $"Error updating contact: {ex.Message}";
+        }
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+
+    private void OnPhotoSelected(ChangeEventArgs e)
+    {
+        // Handle photo upload if needed
+    }
+}
