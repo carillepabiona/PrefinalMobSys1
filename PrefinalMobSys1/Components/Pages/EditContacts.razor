@@ -9,13 +9,13 @@
 </head>
 
 <div class="create-account-container">
-    <h3>Edit Contact</h3>
+    <h3 style="color: #4c8479;">Edit Contact</h3>
 
     <div class="photo-upload">
         <label for="photoInput">
             <div class="photo-placeholder">
-                <i class="fa fa-camera" style="font-size:48px;color:#f2766a;"></i>
-                <div style="font-size:14px;color:#f2766a;">Add Photo</div>
+                <i class="fa fa-camera" style="font-size:48px;color:#4c8479;"></i>
+                <div style="font-size:14px;color:#4c8479;">Add Photo</div>
             </div>
         </label>
         <input type="file" id="photoInput" style="display:none" @onchange="OnPhotoSelected" />
@@ -37,7 +37,7 @@
         <input class="form-input" placeholder="Address" @bind="editPerson.Address" />
     </div>
 
-    <div class="add-other-field" @onclick="ShowOtherFields">Add Other Field</div>
+    <div class="add-other-field" @onclick="ShowOtherFields" style="color: #4c8479;">Add Other Field</div>
 
     @if (showOtherFields)
     {
@@ -60,7 +60,7 @@
     }
 
     <div class="form-field">
-        <label>
+        <label style="color: #4c8479;">
             <input type="checkbox" @bind="editPerson.IsFavorite" />
             Mark as Favorite
         </label>
@@ -76,6 +76,7 @@
         <div class="save-message">@saveMessage</div>
     }
 </div>
+
 
 @code {
     [Parameter]
