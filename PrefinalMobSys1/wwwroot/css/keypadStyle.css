@@ -1,0 +1,84 @@
+﻿body {
+    background: white;
+    font-family: sans-serif;
+}
+
+h3 {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 2rem;
+    color: white;
+}
+
+.dial-display {
+    font-size: 36px;
+    text-align: center;
+    margin: 20px auto;
+    padding: 15px;
+    width: 300px;
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 2px solid #ffffff33;
+    border-radius: 20px;
+    color: black;
+}
+
+.keypad {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.keypad-placing{
+    top:100px;
+}
+.keypad-row {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+    .keypad-row button {
+        width: 80px;
+        height: 80px;
+        font-size: 28px;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        background: linear-gradient(145deg, #4c8479, #6fa99d);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        transition: transform 0.1s ease-in-out;
+    }
+
+        .keypad-row button:active {
+            transform: scale(0.95);
+        }
+
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+    .actions button {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        color: white;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+.call-button {
+    background: linear-gradient(145deg, #2e7d5a, #4cb98b);
+}
+
+.delete-button {
+    background: linear-gradient(145deg, #a34c4c, #e05e5e);
+}

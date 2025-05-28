@@ -9,13 +9,27 @@ namespace PrefinalMobSys1.Services
 {
     public class ThemeService
     {
-        public string CurrentTheme { get; private set; } = "light";
+        private const string ThemeKey = "app_theme";
+        private const string DefaultTheme = "light";
+
+        public string CurrentTheme { get; private set; }
+
         public event Action<string> OnThemeChanged;
+
+        public ThemeService()
+        {
+            // Load saved theme or default
+            CurrentTheme = Preferences.Get(ThemeKey, DefaultTheme);
+        }
 
         public void SetTheme(string theme)
         {
-            CurrentTheme = theme;
-            OnThemeChanged?.Invoke(theme);
+            if (CurrentTheme != theme)
+            {
+                CurrentTheme = theme;
+                Preferences.Set(ThemeKey, theme);
+                OnThemeChanged?.Invoke(theme);
+            }
         }
     }
 

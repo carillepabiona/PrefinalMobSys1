@@ -1,0 +1,66 @@
+﻿@page "/keypad"
+@inject IJSRuntime JS
+@using PrefinalMobSys1.Services;
+@inject ThemeService ThemeService
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="css/keypadStyle.css" />
+<div class="dial-display">@PhoneNumber</div>
+
+<body>
+    <div class="keypad-placing">
+        <div class="keypad">
+            @foreach (var row in KeypadRows)
+            {
+                <div class="keypad-row">
+                    @foreach (var key in row)
+                    {
+                        <button @onclick="() => AddDigit(key)">@key</button>
+                    }
+                </div>
+            }
+        </div>
+
+        <div class="actions">
+            <button class="call-button" @onclick="MakeCall">
+                <i class="fa fa-phone"></i>
+            </button>
+
+            <button class="delete-button" @onclick="DeleteLast">
+                <i class="fa fa-backspace"></i>
+            </button>
+        </div>
+    </div>
+</body>
+
+
+@code {
+    private string PhoneNumber = "";
+
+    private string[][] KeypadRows = new[]
+    {
+        new[] { "1", "2", "3" },
+        new[] { "4", "5", "6" },
+        new[] { "7", "8", "9" },
+        new[] { "*", "0", "#" }
+    };
+
+    void AddDigit(string digit)
+    {
+        PhoneNumber += digit;
+    }
+
+    void DeleteLast()
+    {
+        if (PhoneNumber.Length > 0)
+            PhoneNumber = PhoneNumber.Substring(0, PhoneNumber.Length - 1);
+    }
+
+    async void MakeCall()
+    {
+        if (!string.IsNullOrWhiteSpace(PhoneNumber))
+        {
+            await JS.InvokeVoidAsync("dialPhone", PhoneNumber);
+        }
+    }
+}
